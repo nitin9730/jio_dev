@@ -6,7 +6,7 @@ from datetime import datetime
 
 # file_path = './Data_input.xlsx'
 
-file_path = 'Users/Nitin14.Patil/Downloads/ril/ril/conveyance_analysis/Data_input.xlsx'
+file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Data_input.xlsx'
 
 
 excel_file = pd.ExcelFile(file_path)
@@ -243,9 +243,9 @@ def custom_check(row):
     elif row['CC'] == "JMDO" and row['Is Mark-In & Markout'] == "Mark In" and row['Distance(KM)'] > 10:
         return "yes"
     elif row['CC'] == "JMDO" and row['Is Mark-In & Markout'] == "Mark Out" and row['Distance(KM)'] > 15:
-        return "yes"
+        return "Yes"
     else:
-        return "no"
+        return "No"
 
 # Apply the function to the DataFrame
 df['Mark in & Out>10KM'] = df.apply(custom_check, axis=1)
@@ -290,7 +290,7 @@ df['Distance between mean to actual'] = np.nan  # Initialize the column with NaN
 
 # Iterate through the DataFrame to calculate distances
 for i in range(1, len(df)):
-    if df.loc[i, 'Is Mark-In & Markout'] == "Yes":
+    if df.loc[i, 'Is Mark-In & Markout'] != "Yes":
         df.loc[i, 'Distance between mean to actual'] = calculate_distance_if_yes(df.loc[i], df.loc[i-1])
 
 # Optionally, you might want to set NaN values to 0 or another placeholder based on your requirements
@@ -334,7 +334,7 @@ def apply_formula(row):
 df['KM post Mark in & Out'] = df.apply(apply_formula, axis=1)
 
 # Apply the conditions
-df['Max Km'] = np.where(
+df['Max KM'] = np.where(
     df['JMDO/JMDL'] == 'JMDO',
     np.where(df['Distance(KM)'] > 30, '', df['Distance(KM)']),
     np.where(df['JMDO/JMDL'] == 'JMDL',
@@ -342,17 +342,21 @@ df['Max Km'] = np.where(
              '')
 )
 
-def check_conditions(df):
-    if df['Speed>60 KM/HR'] == "No" and df['Occurrence Chk'] == "No" and df['Mark in & Out>10KM'] == "No":
-        return df['Distance(KM)']
-    else:
-        return ""
+
+
+
 
 # Assuming your DataFrame is named df
-df['No issue'] = df.apply(check_conditions, axis=1)
+df['No issue'] = df.apply(lambda x: x['Distance(KM)'] if x['Speed>60 KM/HR'] == "No" and x['Occurrence Chk'] == "No" and x['Mark in & Out>10KM'] == "No" else '', axis=1)
+    
+
+
+checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
+
+
 
 # Specify the columns to convert
-columns_to_convert = ['KM post Speed', 'KM post Mark in & Out', 'Occurrence KM', 'Max Km', 'No issue']
+columns_to_convert = ['KM post Speed', 'KM post Mark in & Out', 'Occurrence KM', 'Max KM', 'No issue']
 
 # Replace empty strings and non-numeric values with NaN
 df[columns_to_convert] = df[columns_to_convert].replace('', np.nan)
@@ -362,11 +366,25 @@ df[columns_to_convert] = df[columns_to_convert].apply(pd.to_numeric, errors='coe
 df[columns_to_convert] = df[columns_to_convert].astype(float)
 
 # Calculate the minimum value across the specified columns
-df['Final KM'] = df[['KM post Speed', 'KM post Mark in & Out', 'Occurrence KM', 'Max Km', 'No issue']].min(axis=1)
+df['Final KM'] = df[['KM post Speed', 'KM post Mark in & Out', 'Occurrence KM', 'Max KM', 'No issue']].min(axis=1)
 
-df['Diff KM'] = df['Distance(KM)'] - df['Final KM']
+df['Diff KM'] = (df['Distance(KM)'] - df['Final KM']).round(2)
 
-df['Travel type'] = 'Mark'
+
+def custom_check_v23(row):
+    if row['Is last checkin to Mark-out'] == "Mark In":
+        return "Mark In"
+    elif row['Is last checkin to Mark-out'] == "Mark Out":
+        return "Mark Out"
+    else:
+        return "Beat"
+
+# Apply the function to the DataFrame
+df['Travel type'] = df.apply(custom_check_v23, axis=1)
+
+checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
+
+
 
 df['LAT & LONG']= df['Lat'].astype(str) + ',' + df['Long'].astype(str)
 
@@ -383,10 +401,6 @@ df['Distance(KM)'] = np.where(
     df['Distance(KM)'].shift(1),  # Value if condition is True
     df['Distance(KM)']  # Value if condition is False
 )
-
-
-
-
 
 checkdf= df[(df['Emp ID']==50093655) & (df['Date']=='2024-07-10')]
 
@@ -474,17 +488,30 @@ df['Flag C'] = df.apply(
     axis=1
 )
 
-df['Distanc']
+df[['Distance(KM)', 'new_Distance(KM)']] = df.apply(
+    lambda x: pd.Series([0, 0]) if x['Is last checkin to Mark-out'] == 'Mark Out' else pd.Series([x['Distance(KM)'], x['new_Distance(KM)']]),
+    axis=1
+)
+
+df[['Median PRM Lat', 'Median Long of PRM']] = df.apply(
+    lambda x: pd.Series([0, 0]) if x['PRM Id'] == 'Attendance' else pd.Series([x['Median PRM Lat'], x['Median Long of PRM']]),
+    axis=1
+)
+
+df=df.drop(columns=['KM post Speed1', 'Occurrences_c', 'Distance(KM)',
+'Flag A',
+'Month',
+'Occurrences_1', 'Distance(KM)_c' ],errors='ignore')
 
 
-
+df = df.rename(columns={'new_Distance(KM)':'Distance(KM)'})
 
 
 checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
 
 
 
-
+df.to_csv('/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/f_ca_adhoc.csv')
 
 
 
