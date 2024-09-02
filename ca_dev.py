@@ -6,7 +6,7 @@ from datetime import datetime
 
 # file_path = './Data_input.xlsx'
 
-file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Data_input.xlsx'
+file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Data_input_f.xlsx'
 
 
 excel_file = pd.ExcelFile(file_path)
@@ -227,7 +227,7 @@ df['Is Mark-In & Markout'] = df['Is last checkin to Mark-out'].apply(lambda x: '
 median_lat_by_prm = df.groupby('PRM Id')['Lat'].median()
 
 # Map these median values back to the original DataFrame
-df['Median PRM Lat'] = df['PRM Id'].map(median_lat_by_prm)
+df['Median Lat of PRM'] = df['PRM Id'].map(median_lat_by_prm)
 
 # Assuming your DataFrame is named df
 # Group by the PRM column and calculate the median Lat for each group
@@ -388,7 +388,7 @@ checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
 
 df['LAT & LONG']= df['Lat'].astype(str) + ',' + df['Long'].astype(str)
 
-df['Observations']=''
+df['Observation']=''
 
 # df.to_csv('Conveyance Analysis Adhoc.csv')
 
@@ -493,27 +493,67 @@ df[['Distance(KM)', 'new_Distance(KM)']] = df.apply(
     axis=1
 )
 
-df[['Median PRM Lat', 'Median Long of PRM']] = df.apply(
-    lambda x: pd.Series([0, 0]) if x['PRM Id'] == 'Attendance' else pd.Series([x['Median PRM Lat'], x['Median Long of PRM']]),
+df[['Median Lat of PRM', 'Median Long of PRM']] = df.apply(
+    lambda x: pd.Series([0, 0]) if x['PRM Id'] == 'Attendance' else pd.Series([x['Median Lat of PRM'], x['Median Long of PRM']]),
     axis=1
 )
 
 df=df.drop(columns=['KM post Speed1', 'Occurrences_c', 'Distance(KM)',
-'Flag A',
 'Month',
 'Occurrences_1', 'Distance(KM)_c' ],errors='ignore')
 
 
-df = df.rename(columns={'new_Distance(KM)':'Distance(KM)'})
-
-
-checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
-
-df.to_csv('/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/f_ca_adhoc.csv')
+df = df.rename(columns={'new_Distance(KM)':'Distance(KM)','beat > 10 KM':'Beat > 10 KM',})
 
 
 
 
+df_final=df[['Emp ID',
+'Date',
+'PRM Id',
+'Lat',
+'Long',
+'Timestamp',
+'Distance(KM)',
+'Speed of Travel (KM/Hr)',
+'Distance is more than 10 Km',
+'Distance is more than 25 Km',
+'Speed>60 KM/HR',
+'Speed Bucket',
+'KM Bucket',
+'Beat > 10 KM',
+'CC',
+'Occurrence',
+'Occurrence Chk',
+'Occurance of more than 10 Km Distance on the same day',
+'Is Mark-In & Markout',
+'Is last checkin to Mark-out',
+'Mark in & Out>10KM',
+'Max KM',
+'Median Lat of PRM',
+'Median Long of PRM',
+'Distance between mean to actual',
+'Distance is more than 1 Km',
+'KM post Speed',
+'KM post Mark in & Out',
+'Occurrence KM',
+'No issue',
+'Final KM',
+'Diff KM',
+'JMDO/JMDL',
+'Travel type',
+'LAT & LONG',
+'Observation', 'Flag A', 'Flag B', 'Flag C']]
+
+df.columns
+
+checkdf= df_final[(df_final['Emp ID']==50093903) & (df_final['Date']=='2024-07-18')]
+
+df_final.to_csv('/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/f_ca_adhoc_02Sep24.csv')
+
+
+
+# df.columns
 
 
 
