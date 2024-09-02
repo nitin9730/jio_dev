@@ -509,8 +509,6 @@ df = df.rename(columns={'new_Distance(KM)':'Distance(KM)'})
 
 checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
 
-
-
 df.to_csv('/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/f_ca_adhoc.csv')
 
 
