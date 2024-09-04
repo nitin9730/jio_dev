@@ -3,14 +3,60 @@ import numpy as np
 import math
 from itertools import combinations
 from datetime import datetime
-
+import os
 # file_path = './Data_input.xlsx'
+
+# file_path='/Users/nitin14.patil/Documents/python_work/conveyance_analysis/JPW July'
+
+# dfs= []
+# # Iterate over all files in the folder
+# # Process the first folder
+# for file in os.listdir(file_path):
+#     file_path = os.path.join(file_path, file)
+#     if os.path.isfile(file_path):
+#         print(f"Reading file: {file_path}")
+#         df = pd.read_csv(file_path, encoding='UTF-16')
+#         dfs.append(df)
+
+# # Concatenate DataFrames if any were found
+# if dfs:
+#     result = pd.concat(dfs, axis=0, ignore_index=True)
+#     print("Concatenation successful!")
+# else:
+#     print("No files were found to concatenate in folder_path.")
+
+
+
+
+
+
+
+
+
+
+# import chardet
+
+# # Open the file in binary mode
+# with open(file_path, 'rb') as f:
+#     rawdata = f.read()
+
+# # Detect the encoding
+# result = chardet.detect(rawdata)
+# encoding = result['encoding']
+
+# print(f"Detected encoding: {encoding}")
+
+
+
+
+
+
+
 
 file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Data_input_f.xlsx'
 
 
 excel_file = pd.ExcelFile(file_path)
-
 
 sheet_names = excel_file.sheet_names
 
@@ -90,8 +136,8 @@ d_df = pd.concat([df_with_distances, df[['JMDO/JMDL']]], axis=1)
 
 # print(df_with_distances)
 
-d_df['Distance(KM)_c'] = d_df.groupby(['Emp ID', 'Date'])['Distance(KM)'].transform(
-    lambda x: 0 if (x > 60).any() else x)
+d_df['70_Distance(KM)_zero'] = d_df.groupby(['Emp ID', 'Date'])['Distance(KM)'].transform(
+    lambda x: 0 if (x > 70).any() else x)
 
 
 d_df['Distance is more than 10 Km']=d_df['Distance(KM)'].apply(lambda x: 'Yes' if x > 10 else 'No')
@@ -498,58 +544,122 @@ df[['Median Lat of PRM', 'Median Long of PRM']] = df.apply(
     axis=1
 )
 
-df=df.drop(columns=['KM post Speed1', 'Occurrences_c', 'Distance(KM)',
-'Month',
-'Occurrences_1', 'Distance(KM)_c' ],errors='ignore')
+
+# df=df.drop(columns=['KM post Speed1', 'Occurrences_c', 'Distance(KM)',
+# 'Month',
+# 'Occurrences_1', 'Distance(KM)_c' ],errors='ignore')
 
 
-df = df.rename(columns={'new_Distance(KM)':'Distance(KM)','beat > 10 KM':'Beat > 10 KM',})
+# df = df.rename(columns={'new_Distance(KM)':'Distance(KM)','beat > 10 KM':'Beat > 10 KM',})
 
 
 
 
-df_final=df[['Emp ID',
-'Date',
-'PRM Id',
-'Lat',
-'Long',
-'Timestamp',
-'Distance(KM)',
-'Speed of Travel (KM/Hr)',
-'Distance is more than 10 Km',
-'Distance is more than 25 Km',
-'Speed>60 KM/HR',
-'Speed Bucket',
-'KM Bucket',
-'Beat > 10 KM',
-'CC',
-'Occurrence',
-'Occurrence Chk',
-'Occurance of more than 10 Km Distance on the same day',
-'Is Mark-In & Markout',
-'Is last checkin to Mark-out',
-'Mark in & Out>10KM',
-'Max KM',
-'Median Lat of PRM',
-'Median Long of PRM',
-'Distance between mean to actual',
-'Distance is more than 1 Km',
-'KM post Speed',
-'KM post Mark in & Out',
-'Occurrence KM',
-'No issue',
-'Final KM',
-'Diff KM',
-'JMDO/JMDL',
-'Travel type',
-'LAT & LONG',
-'Observation', 'Flag A', 'Flag B', 'Flag C']]
 
-df.columns
 
-checkdf= df_final[(df_final['Emp ID']==50093903) & (df_final['Date']=='2024-07-18')]
+# df_final=df[['Emp ID',
+# 'Date',
+# 'PRM Id',
+# 'Lat',
+# 'Long',
+# 'Timestamp',
+# 'Distance(KM)',
+# 'Speed of Travel (KM/Hr)',
+# 'Distance is more than 10 Km',
+# 'Distance is more than 25 Km',
+# 'Speed>60 KM/HR',
+# 'Speed Bucket',
+# 'KM Bucket',
+# 'Beat > 10 KM',
+# 'CC',
+# 'Occurrence',
+# 'Occurrence Chk',
+# 'Occurance of more than 10 Km Distance on the same day',
+# 'Is Mark-In & Markout',
+# 'Is last checkin to Mark-out',
+# 'Mark in & Out>10KM',
+# 'Max KM',
+# 'Median Lat of PRM',
+# 'Median Long of PRM',
+# 'Distance between mean to actual',
+# 'Distance is more than 1 Km',
+# 'KM post Speed',
+# 'KM post Mark in & Out',
+# 'Occurrence KM',
+# 'No issue',
+# 'Final KM',
+# 'Diff KM',
+# 'JMDO/JMDL',
+# 'Travel type',
+# 'LAT & LONG',
+# 'Observation', 'Flag A', 'Flag B', 'Flag C']]
 
-df_final.to_csv('/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/f_ca_adhoc_02Sep24.csv')
+# df.columns
+
+checkdf= df[(df['Emp ID']==50093903) & (df['Date']=='2024-07-18')]
+
+
+
+
+
+
+
+
+
+
+c_file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Car Request Details.xlsx'
+
+
+c_excel_file = pd.ExcelFile(c_file_path)
+
+
+c_sheet_names = c_excel_file.sheet_names
+
+c_df_ca = pd.read_excel(c_excel_file)
+
+
+
+# Function to check if a record in df1 matches any record in df2
+def check_record_match(row, df2):
+    matches = c_df_ca[(c_df_ca['TRDMID'] == row['Emp ID']) &
+                  (c_df_ca['TRDMBOOKSTARTDATE'] <= row['Date']) &
+                  (c_df_ca['TRDMBOOKENDDATE'] >= row['Date'])]
+    return len(matches) > 0
+
+# Apply the function to each row in df1
+df['Travel_Record_Match'] = df.apply(check_record_match, axis=1, c_df_ca=c_df_ca)
+
+# print(df)
+
+
+# Corrected function definition
+def check_record_match(row, df2):
+    matches = df2[(df2['TRDMID'] == row['Emp ID']) &
+                  (df2['TRDMBOOKSTARTDATE'] <= row['Date']) &
+                  (df2['TRDMBOOKENDDATE'] >= row['Date'])]
+    return len(matches) > 0
+
+# Apply the function to each row in df1 with the additional argument passed via 'args'
+df['Travel_Record_Match'] = df.apply(check_record_match, axis=1, args=(c_df_ca,))
+
+# Print the resulting DataFrame
+print(df)
+
+
+
+
+checkdf= df[(df['Travel_Record_Match']=='True')]
+
+
+
+
+
+
+
+
+
+
+df.to_csv('/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/f_ca_adhoc_02Sep24.csv')
 
 
 
