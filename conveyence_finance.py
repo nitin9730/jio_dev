@@ -114,6 +114,7 @@ df['Timestamp'] = pd.to_datetime(df['Timestamp'], format="%Y-%m-%d %H:%M:%S.%f",
 
 # Step 1: Convert the 'Date' column to datetime format
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
 print('line 100 run successfully')
 
 
@@ -122,6 +123,7 @@ print('line 100 run successfully')
 
 
 # Filter the DataFrame for the specific date
+
 checkdf = df[(df['Emp ID'] == 50095250)&(df['Date'] == '2024-07-01')]
 
 df.dtypes
@@ -346,6 +348,11 @@ d_df['Line >10 KM']=np.where(
     )
 
 
+d_df['Line >10 KM_for_10_Ocurence']=np.where(
+    (d_df['PRM Id'] == "Attendance") & (d_df['Distance(KM)']>10), 'Yes', 'No'
+    
+    )
+
 # Filter the DataFrame for the specific date
 checkdf = d_df[(d_df['Emp ID'] == 50095250)&(d_df['Date'] == '2024-07-01')]
 
@@ -404,7 +411,7 @@ d_df.loc[d_df['Timestamp'].isin(df1_filtered['Timestamp_x']) & (d_df['PRM Id'] =
 
 checkdf= d_df[(d_df['Emp ID']==50123511) & (d_df['Date']=='2024-07-05')]
 
-b_df = d_df[(d_df['Line >10 KM']=='Yes')&(d_df['Is last checkin to Mark-out']=='Mark In')]
+b_df = d_df[(d_df['Line >10 KM_for_10_Ocurence']=='Yes')&(d_df['Is last checkin to Mark-out']=='Mark In')]
 
 # Group by 'Emp ID' and 'Date' and sum the 'Distance(KM)'
 result13 = b_df.groupby(['Emp ID'])['Line >10 KM'].count().reset_index()
@@ -428,10 +435,14 @@ d_df['count >10KM check in']=d_df['count >10KM check in'].round(0)
 d_df['Count of 8 Occurence/M >10KM- Flag B'] =np.where(
     (d_df['Is last checkin to Mark-out']=='Mark In') &  
     (d_df['count >10KM check in']>8)&
-    (d_df['Distance(KM)'].round(0)>10),
+    (d_df['Distance(KM)']>10),
     'Yes',
     'No'
     )
+
+
+
+d_df.dtypes
 
 # FLAG C
 # High Travel Frequency: For instances of more than 10 km 
@@ -439,7 +450,9 @@ d_df['Count of 8 Occurence/M >10KM- Flag B'] =np.where(
 # review for potential fake visits. Flag C- Analyse
 # Pivot_c
 # Step 1: Filter rows where KM > 10
-df_filtered = d_df[d_df['Distance(KM)'] > 10]
+df_filtered = d_df[(d_df['Distance(KM)'] > 10)&
+                   (d_df['Is last checkin to Mark-out']!="Mark In")&
+                   (d_df['Is last checkin to Mark-out']!="Mark Out")]
 
 # Step 2: Group by 'Emp ID' and 'Date', and count the number of occurrences
 km_count = df_filtered.groupby(['Emp ID', 'Date']).size().reset_index(name='Flag C check')
@@ -450,14 +463,20 @@ print(km_count)
 # Merging DataFrames
 merged_df = d_df.merge(km_count[['Emp ID', 'Date', 'Flag C check']], on=['Emp ID', 'Date'], how='left')
 
-merged_df['Count >3 per day of >10KM - Flag-C']=np.where(
-   (merged_df['Flag C check']>3)&(merged_df['Distance(KM)'])>10 ,'Yes','No')
+merged_df['Distance(KM)_shift'] = merged_df['Distance(KM)'].shift(1)
+
+merged_df['Distance(KM)_shift1']=merged_df['Distance(KM)_shift'].shift(-1)
+merged_df['Is last checkin to Mark-out1']=merged_df['Is last checkin to Mark-out'].shift(-1)
+
+
+
+merged_df['Count >3 per day of >10KM - Flag-C between Retailers']=np.where(
+   (merged_df['Flag C check']>3)&
+   (merged_df['Distance(KM)']>10),'Yes','No')
+
 
 
 d_df=merged_df
-
-
-
 
 checkdf= d_df[(d_df['Emp ID']==50123511)]
 
@@ -509,16 +528,150 @@ expanded_df['date_value'] = expanded_df['TRDMBOOKSTARTDATE'].apply(date_to_excel
 expanded_df['CC'] = (expanded_df['TRDMFIELD1'].astype(str) + expanded_df['date_value'].astype(str)).astype(int)
 
 
-d_df['KM post Mark in/Out'] = np.where(
-    (d_df['JMDO/JMDL'] == "JMDO") & (d_df['Is last checkin to Mark-out'] == "Mark In"),
-    d_df['Distance(KM)'].clip(upper=20),0)
-d_df['KM post Mark in/Out'] = np.where(
-        (d_df['JMDO/JMDL'] == "JMDL") & (d_df['Is last checkin to Mark-out'] == "Mark In"),
-        d_df['Distance(KM)'].clip(upper=40),
-        0 # Assuming you want to keep the existing value if neither condition is met
-    )
+# Step 1: Create a shifted column for Distance(KM) with the correct shift applied
+
+# shifted_km_post = d_df['KM post Mark in/Out'].shift(-1)
+
+# 'KM post Mark in/Out',
+
+d_df.dtypes
 
 
+
+# Step 2: Apply the conditions and assign the results
+d_df['KM post Mark in/Out1'] = np.where(
+    (d_df['JMDO/JMDL'] == "JMDO") & 
+    (d_df['Is last checkin to Mark-out'] == "Mark In") & 
+    (d_df['Distance(KM)'] > 20),
+    20,
+    d_df['Distance(KM)']
+)
+
+# Step 3: Apply the second condition for JMDL
+d_df['KM post Mark in/Out1'] = np.where(
+    (d_df['JMDO/JMDL'] == "JMDL") & 
+    (d_df['Is last checkin to Mark-out'] == "Mark In") & 
+    (d_df['Distance(KM)'] > 40),
+    40,
+     d_df['Distance(KM)'] # Keep the values from the first condition
+)
+
+
+
+
+
+
+# Step 2: Apply the conditions and assign the results
+d_df['KM post Mark in/Out'] = np.where(
+    (d_df['JMDO/JMDL'] == "JMDO") & 
+    (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
+    (d_df['Distance(KM)_shift1'] > 20),
+    20,
+    ['KM post Mark in/Out1']
+)
+
+# Step 3: Apply the second condition for JMDL
+d_df['KM post Mark in/Out'] = np.where(
+    (d_df['JMDO/JMDL'] == "JMDL") & 
+    (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
+    (d_df['Distance(KM)_shift1'] > 40),
+    40,
+    d_df['Distance(KM)']  # Keep the values from the first condition
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # Step 2: Apply the conditions and assign the results
+# d_df['KM post Mark in/Out1'] = np.where(
+#     (d_df['JMDO/JMDL'] == "JMDO") & 
+#     (d_df['Is last checkin to Mark-out'] == "Mark In") & 
+#     (d_df['Distance(KM)_shift1'] > 20),
+#     20,
+#     d_df['Distance(KM)']
+# )
+
+# # Step 3: Apply the second condition for JMDL
+# d_df['KM post Mark in/Out1'] = np.where(
+#     (d_df['JMDO/JMDL'] == "JMDL") & 
+#     (d_df['Is last checkin to Mark-out'] == "Mark In") & 
+#     (d_df['Distance(KM)_shift1'] > 40),
+#     40,
+#      d_df['Distance(KM)'] # Keep the values from the first condition
+# )
+
+
+
+# # Step 2: Apply the conditions and assign the results
+# d_df['KM post Mark in/Out'] = np.where(
+#     (d_df['JMDO/JMDL'] == "JMDO") & 
+#     (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
+#     (d_df['Distance(KM)_shift1'] > 20),
+#     20,
+#     ['KM post Mark in/Out1']
+# )
+
+# # Step 3: Apply the second condition for JMDL
+# d_df['KM post Mark in/Out'] = np.where(
+#     (d_df['JMDO/JMDL'] == "JMDL") & 
+#     (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
+#     (d_df['Distance(KM)_shift1'] > 40),
+#     40,
+#     ['KM post Mark in/Out1']  # Keep the values from the first condition
+# )
+
+# Example of filtering for a specific employee ID
+checkdf = d_df[(d_df['Emp ID'] == 50093194)&(d_df['Date'] == '23/07/24')]
+
+
+# Step 3: Apply the second condition for JMDL
+d_df['KM post Mark in/Out'] = np.where(
+
+   d_df['Is last checkin to Mark-out'] == "Mark Out",
+    0,
+    d_df['KM post Mark in/Out']
+)
+
+
+
+# Step 3: Apply the second condition for JMDL
+d_df['KM post Mark in/Out1'] = np.where(
+
+   d_df['Is last checkin to Mark-out'] == "Mark Out",
+    0,
+    d_df['KM post Mark in/Out']
+)
+
+
+
+
+
+# Step 4: Check if the values have been updated
+df_ch=d_df[['JMDO/JMDL','Emp ID', 'Date', 'Is last checkin to Mark-out', 'Distance(KM)',  'Distance(KM)_shift','Distance(KM)_shift1','Is last checkin to Mark-out1','KM post Mark in/Out']]
+
+
+
+df_ch = df_ch[(d_df['Emp ID'] == 50117191)&(df_ch['Date']=='2024-07-13')]
+
+
+
+# Example of filtering for a specific employee ID
+checkdf = d_df[(d_df['Emp ID'] == 50117191)&(d_df['Date']=='2024-07-13')]
+
+
+# Create a shifted version of the 'Distance(KM)' column
+# d_df['Distance(KM)_shift'] = d_df['Distance(KM)'].shift(1)
+
+# .loc[i+1,'Lat']
 
 
 # Assign 'Yes' or 'No' based on whether the value in 'CC' is in expanded_df['CC']
@@ -528,11 +681,7 @@ d_df['Car Hire chk'] = np.where(d_df['CC'].isin(expanded_df['CC']), 'Yes', 'No')
 # Example of filtering for a specific employee ID
 checkdf = d_df[d_df['Emp ID'] == 50123511]
 
-d_df['KM post Speed'] = np.where(
-    d_df['Distance(KM)']>70,0,d_df['Distance(KM)']
-    )
-
-checkdf = d_df[(d_df['Emp ID'] == 50123511) & (d_df['Distance(KM)'] >70)]
+checkdf = d_df[(d_df['Emp ID'] == 67646412) & (d_df['Distance(KM)'] >70)]
 
 
 d_df['Car Hire KM']=np.where(
@@ -547,12 +696,62 @@ d_df['No Issues'] = np.where(
 )
 
 
+d_df['KM post Speed'] = np.where(
+    d_df['Speed>70 KM/HR']=='Yes',0,d_df['Distance(KM)']
+    )
+
+
+
 # Convert columns to numeric, forcing errors to NaN
 d_df[['KM post Speed', 'KM post Mark in/Out', 'Car Hire KM', 'No Issues']] = d_df[['KM post Speed', 
     'KM post Mark in/Out', 'Car Hire KM', 'No Issues']].apply(pd.to_numeric, errors='coerce')
 
-# Calculate the minimum value across the specified columns for each row
-d_df['Final KM'] = d_df[['KM post Speed', 'KM post Mark in/Out', 'Car Hire KM', 'No Issues']].min(axis=1)
+
+# ===========================
+# # Calculate the minimum value across the specified columns for each row
+# d_df['Final KM'] = np.where(
+#     (d_df['KM post Speed']!=0)|(d_df['KM post Mark in/Out']!=0)|(d_df['Car Hire KM']!=0),
+    
+#     d_df[['KM post Speed', 'KM post Mark in/Out', 'Car Hire KM']].min(axis=1),
+    
+#     d_df['No Issues'])
+# ===========================
+
+
+
+
+
+
+d_df['Final KM'] = np.where(
+    d_df['Car Hire KM'] == 'Yes',  # Condition 1
+0,  # If 'Car Hire KM' is 'Yes', set 'Final KM' to 0
+    np.where(
+        d_df['Speed>70 KM/HR'] == 'Yes',  # Condition 2 (nested)
+        0,  # If 'Speed>70 KM/HR' is 'Yes', set 'Final KM' to 0
+        np.where(
+            d_df['Attendance chk'] == 'Yes',  # Condition 3 (nested)
+            d_df['KM post Mark in/Out'],  # If 'Attendance chk' is 'Yes', set 'Final KM' to 'KM post Mark in/Out'
+            d_df['No Issues']  # Otherwise, set 'Final KM' to 'No Issues'
+        )
+    )
+)
+
+
+
+
+
+print(d_df[['Car Hire KM', 'Speed>70 KM/HR', 'Attendance chk', 'KM post Mark in/Out', 'No Issues']].head())
+
+
+    
+d_df.dtypes
+# Example of filtering for a specific employee ID
+checkdf = d_df[(d_df['Emp ID'] == 50109664)&(d_df['Date']=='2024-07-06')]
+
+
+# 50109664
+
+    
 
 
 d_df['Diff KM'] = d_df['Final KM']-d_df['Distance(KM)']
@@ -561,11 +760,14 @@ d_df['LAT & LONG'] = (d_df['Lat'].astype(str) +","+d_df['Long'].astype(str))
 
 d_df['Observations']=''
 
-# Example of filtering for a specific employee ID
-checkdf = d_df[d_df['Emp ID'] == 50123511]
+
+
+
+# 50093194	23/07/24
+
 
 d_df_f=d_df[[
-             'Emp ID',
+              'Emp ID',
 'Date',
 'PRM Id',
 'Lat',
@@ -581,15 +783,18 @@ d_df_f=d_df[[
 'Daily KMs chk- Flag A',
 'Line >10 KM',
 'Count of 8 Occurence/M >10KM- Flag B',
-'Count >3 per day of >10KM - Flag-C',
+'Count >3 per day of >10KM - Flag-C between Retailers',
 'Car Hire chk',
 'KM post Speed',
 'KM post Mark in/Out',
-'Car Hire KM',
+'Car Hire KM',  
 'No Issues',
 'Final KM',
 'Diff KM',
 'LAT & LONG',
 'Observations'
-             ]]
-d_df_f.to_csv('Adhoc with new changes.csv')
+              ]]
+d_df_f.to_csv('Adhoc with new changes with_limited_columns.csv')
+
+d_df.to_csv('Adhoc with new changes with_all_columns.csv')
+
