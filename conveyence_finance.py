@@ -19,7 +19,9 @@ from haversine import haversine, Unit
 
 
 # Define the folder path
-folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW July'
+folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW May'
+
+
 
 # Initialize an empty list to store DataFrames
 dfs1 = []
@@ -466,6 +468,9 @@ merged_df = d_df.merge(km_count[['Emp ID', 'Date', 'Flag C check']], on=['Emp ID
 merged_df['Distance(KM)_shift'] = merged_df['Distance(KM)'].shift(1)
 
 merged_df['Distance(KM)_shift1']=merged_df['Distance(KM)_shift'].shift(-1)
+
+merged_df['Distance(KM)_shift2'] = merged_df['Distance(KM)'].shift(-1)
+
 merged_df['Is last checkin to Mark-out1']=merged_df['Is last checkin to Mark-out'].shift(-1)
 
 
@@ -538,118 +543,89 @@ d_df.dtypes
 
 
 
-# Step 2: Apply the conditions and assign the results
-d_df['KM post Mark in/Out1'] = np.where(
-    (d_df['JMDO/JMDL'] == "JMDO") & 
-    (d_df['Is last checkin to Mark-out'] == "Mark In") & 
-    (d_df['Distance(KM)'] > 20),
-    20,
-    d_df['Distance(KM)']
-)
+def calculate_new_distance(row):
+    # Apply the JMDL conditions
+    if row['JMDO/JMDL'] == "JMDL" and row['Is last checkin to Mark-out'] == "Mark In" and row['Distance(KM)'] > 40:
+        return 40
+    
+    if row['JMDO/JMDL'] == "JMDL" and row['Is last checkin to Mark-out1'] == "Mark Out" and row['Distance(KM)'] > 40:
+        return 40
+    
+    # Apply the JMDO conditions
+    if row['JMDO/JMDL'] == "JMDO" and row['Is last checkin to Mark-out'] == "Mark In" and row['Distance(KM)'] > 20:
+        return 20
+    if row['JMDO/JMDL'] == "JMDO" and row['Is last checkin to Mark-out1'] == "Mark Out" and row['Distance(KM)'] > 20:
+        return 20
 
-# Step 3: Apply the second condition for JMDL
-d_df['KM post Mark in/Out1'] = np.where(
-    (d_df['JMDO/JMDL'] == "JMDL") & 
-    (d_df['Is last checkin to Mark-out'] == "Mark In") & 
-    (d_df['Distance(KM)'] > 40),
-    40,
-     d_df['Distance(KM)'] # Keep the values from the first condition
-)
+    # Default case if no conditions are met
+    return row['Distance(KM)']
 
-
-
-
+# Apply the function to the dataframe
+d_df['new_distance_n'] = d_df.apply(calculate_new_distance, axis=1)
 
 
-# Step 2: Apply the conditions and assign the results
-d_df['KM post Mark in/Out'] = np.where(
-    (d_df['JMDO/JMDL'] == "JMDO") & 
-    (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
-    (d_df['Distance(KM)_shift1'] > 20),
-    20,
-    ['KM post Mark in/Out1']
-)
-
-# Step 3: Apply the second condition for JMDL
-d_df['KM post Mark in/Out'] = np.where(
-    (d_df['JMDO/JMDL'] == "JMDL") & 
-    (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
-    (d_df['Distance(KM)_shift1'] > 40),
-    40,
-    d_df['Distance(KM)']  # Keep the values from the first condition
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
-# # Step 2: Apply the conditions and assign the results
-# d_df['KM post Mark in/Out1'] = np.where(
-#     (d_df['JMDO/JMDL'] == "JMDO") & 
-#     (d_df['Is last checkin to Mark-out'] == "Mark In") & 
-#     (d_df['Distance(KM)_shift1'] > 20),
-#     20,
-#     d_df['Distance(KM)']
-# )
-
-# # Step 3: Apply the second condition for JMDL
-# d_df['KM post Mark in/Out1'] = np.where(
-#     (d_df['JMDO/JMDL'] == "JMDL") & 
-#     (d_df['Is last checkin to Mark-out'] == "Mark In") & 
-#     (d_df['Distance(KM)_shift1'] > 40),
-#     40,
-#      d_df['Distance(KM)'] # Keep the values from the first condition
-# )
+checkdf = d_df[(d_df['Emp ID'] == 50117191)]
+              
 
 
 
 # # Step 2: Apply the conditions and assign the results
 # d_df['KM post Mark in/Out'] = np.where(
-#     (d_df['JMDO/JMDL'] == "JMDO") & 
-#     (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
-#     (d_df['Distance(KM)_shift1'] > 20),
-#     20,
-#     ['KM post Mark in/Out1']
+#     (d_df['JMDO/JMDL'].isin(["JMDO", "JMDL"])) & 
+#     (d_df['Is last checkin to Mark-out'].isin(["Mark In"])),
+#     d_df['new_distance_n'],
+#     # Assign 'new_distance_n' where condition is met
+#     d_df['Distance(KM)']  # Otherwise, assign 'Distance(KM)'
 # )
 
-# # Step 3: Apply the second condition for JMDL
-# d_df['KM post Mark in/Out'] = np.where(
-#     (d_df['JMDO/JMDL'] == "JMDL") & 
-#     (d_df['Is last checkin to Mark-out1'] == "Mark Out") & 
-#     (d_df['Distance(KM)_shift1'] > 40),
-#     40,
-#     ['KM post Mark in/Out1']  # Keep the values from the first condition
-# )
+
+d_df['new_distance_n1'] = d_df['new_distance_n'].shift(1)
+
+
+def apply_km_post_mark_in_out(d_df):
+    # Apply the first condition (for 'Mark In')
+    d_df['KM post Mark in/Out'] = np.where(
+        (d_df['JMDO/JMDL'].isin(["JMDO", "JMDL"])) & 
+        (d_df['Is last checkin to Mark-out'] == "Mark In"),
+        d_df['new_distance_n'],
+        d_df['Distance(KM)']  # If condition is not met, keep the original value
+    )
+    
+    # Apply the second condition (for 'Mark Out') without overwriting the first
+    d_df['KM post Mark in/Out'] = np.where(
+        (d_df['JMDO/JMDL'].isin(["JMDO", "JMDL"])) & 
+        (d_df['Is last checkin to Mark-out1'] == "Mark Out"),
+        d_df['new_distance_n'],
+        d_df['KM post Mark in/Out']  # Keep previous 'KM post Mark in/Out' values if condition not met
+    )
+
+    return d_df
+
+d_df = apply_km_post_mark_in_out(d_df)
 
 # Example of filtering for a specific employee ID
-checkdf = d_df[(d_df['Emp ID'] == 50093194)&(d_df['Date'] == '23/07/24')]
+checkdf = d_df[(d_df['Emp ID'] == 50087788)
+               
+               &(d_df['Date'] == '25/07/24')]
 
 
-# Step 3: Apply the second condition for JMDL
-d_df['KM post Mark in/Out'] = np.where(
+# # Step 3: Apply the second condition for JMDL
+# d_df['KM post Mark in/Out'] = np.where(
 
-   d_df['Is last checkin to Mark-out'] == "Mark Out",
-    0,
-    d_df['KM post Mark in/Out']
-)
+#    d_df['Is last checkin to Mark-out'] == "Mark Out",
+#     0,
+#     d_df['KM post Mark in/Out']
+# )
 
 
 
-# Step 3: Apply the second condition for JMDL
-d_df['KM post Mark in/Out1'] = np.where(
+# # Step 3: Apply the second condition for JMDL
+# d_df['KM post Mark in/Out1'] = np.where(
 
-   d_df['Is last checkin to Mark-out'] == "Mark Out",
-    0,
-    d_df['KM post Mark in/Out']
-)
+#    d_df['Is last checkin to Mark-out'] == "Mark Out",
+#     0,
+#     d_df['KM post Mark in/Out']
+# )
 
 
 
@@ -692,7 +668,7 @@ d_df['Car Hire KM']=np.where(
 d_df['No Issues'] = np.where(
     (d_df['Speed>70 KM/HR'] == 'No') & (d_df['Attendance chk'] == 'No'),
     d_df['Distance(KM)'],
-    0  # Default value if the condition is not met
+    0     # Default value if the condition is not met
 )
 
 
@@ -722,22 +698,35 @@ d_df[['KM post Speed', 'KM post Mark in/Out', 'Car Hire KM', 'No Issues']] = d_d
 
 
 
+# #d_df['Final KM'] = np.where(
+#     d_df['Car Hire KM'] == 'Yes',  # Condition 1
+# 0,  # If 'Car Hire KM' is 'Yes', set 'Final KM' to 0
+#     np.where(
+#         d_df['Speed>70 KM/HR'] == 'Yes',  # Condition 2 (nested)
+#         0,  # If 'Speed>70 KM/HR' is 'Yes', set 'Final KM' to 0
+#         np.where(
+#             d_df['Attendance chk'] == 'Yes',  # Condition 3 (nested)
+#             d_df['KM post Mark in/Out'],  # If 'Attendance chk' is 'Yes', set 'Final KM' to 'KM post Mark in/Out'
+#             d_df['No Issues']  # Otherwise, set 'Final KM' to 'No Issues'
+#         )
+#     )
+# )
+
+
+
+# Step 1: Set 'Final KM' to 0 if 'Car Hire KM' == 'Yes' OR 'Speed>70 KM/HR' == 'Yes'
 d_df['Final KM'] = np.where(
-    d_df['Car Hire KM'] == 'Yes',  # Condition 1
-0,  # If 'Car Hire KM' is 'Yes', set 'Final KM' to 0
-    np.where(
-        d_df['Speed>70 KM/HR'] == 'Yes',  # Condition 2 (nested)
-        0,  # If 'Speed>70 KM/HR' is 'Yes', set 'Final KM' to 0
-        np.where(
-            d_df['Attendance chk'] == 'Yes',  # Condition 3 (nested)
-            d_df['KM post Mark in/Out'],  # If 'Attendance chk' is 'Yes', set 'Final KM' to 'KM post Mark in/Out'
-            d_df['No Issues']  # Otherwise, set 'Final KM' to 'No Issues'
-        )
-    )
+    (d_df['Car Hire chk'] == 'Yes') | (d_df['Speed>70 KM/HR'] == 'Yes'),  # OR condition
+    0,  # Set 'Final KM' to 0 if either condition is True
+     # Default value is 'No Issues'
+
+ np.where(
+    (d_df['Attendance chk'] == 'Yes') & (d_df['No Issues'] == 0),  # Attendance check condition
+    d_df['KM post Mark in/Out'],  # If 'Attendance chk' is 'Yes', set 'Final KM' to 'KM post Mark in/Out'
+    d_df['No Issues']   # Retain the value from Step 1 if 'Attendance chk' is not 'Yes'
 )
 
-
-
+)
 
 
 print(d_df[['Car Hire KM', 'Speed>70 KM/HR', 'Attendance chk', 'KM post Mark in/Out', 'No Issues']].head())
@@ -746,11 +735,12 @@ print(d_df[['Car Hire KM', 'Speed>70 KM/HR', 'Attendance chk', 'KM post Mark in/
     
 d_df.dtypes
 # Example of filtering for a specific employee ID
-checkdf = d_df[(d_df['Emp ID'] == 50109664)&(d_df['Date']=='2024-07-06')]
+checkdf = d_df[(d_df['Emp ID'] == 50109664)]
 
 
 # 50109664
 
+# 67646412
     
 
 
@@ -794,7 +784,7 @@ d_df_f=d_df[[
 'LAT & LONG',
 'Observations'
               ]]
-d_df_f.to_csv('Adhoc with new changes with_limited_columns.csv')
+d_df_f.to_csv('Adhoc with new changes with_limited_columns_May24.csv')
 
-d_df.to_csv('Adhoc with new changes with_all_columns.csv')
+d_df.to_csv('Adhoc with new changes with_all_columns_May24.csv')
 
