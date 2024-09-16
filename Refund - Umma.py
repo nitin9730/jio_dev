@@ -5,8 +5,47 @@ import os
 from openpyxl import load_workbook
 
 
+file1=pd.read_excel('./input/PGR Utility Inc Data.xlsx')
+
+file2=pd.read_excel('./input/Refund Validation.xlsx')
+
+file3=pd.read_excel('./input/Roms Refund Trigger.xlsx')
+
+file3.columns
+
+file3['Source']="ROM'S"
+
+file3=file3[['Source','airmail_id', 'shipment_id','refund_type',
+       'Sum of AMOUNT']]
+
+file3['Sum of AMOUNT'] = file3['Sum of AMOUNT'].apply(lambda x: -abs(x))
+
+file1.columns
+
+file1['Source']="UTILITY"
+
+file1=file1[['Source','Airmail ID', 'Shipment ID','Order Item Status',
+       'Amount To Be Given']]
+
+
+file3=file3.rename(columns={'airmail_id':'Airmail ID','shipment_id':'Shipment ID','refund_type':'Order Item Status','Sum of AMOUNT':'Amount To Be Given'})
+
+
+con_d=pd.concat([file1,file3],axis=0,ignore_index=True)
+
+
+
+
+
+
+
+
+
+
+
+
 # Define the folder path
-folder_path1 = './460'
+folder_path1 = '.'
 folder_path2 = './RRA POS'
 # Define the folder path
 folder_path3 = './Reco'
