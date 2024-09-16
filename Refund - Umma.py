@@ -41,9 +41,6 @@ con_d=pd.concat([file1,file3],axis=0,ignore_index=True)
 
 
 
-
-
-
 # Define the folder path
 folder_path1 = '.'
 folder_path2 = './RRA POS'
