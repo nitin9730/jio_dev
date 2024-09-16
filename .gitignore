@@ -1,0 +1,13 @@
+# Ignore all files
+*
+
+# Ignore the limited_columns_Apr24.xlsx file
+limited_columns_Apr24.xlsx
+
+# But do not ignore Python and Jupyter Notebook files
+!*.py
+!*.ipynb
+
+# Do not ignore the .gitignore file itself
+!.gitignore
+
