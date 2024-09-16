@@ -19,7 +19,11 @@ from haversine import haversine, Unit
 
 
 # Define the folder path
+<<<<<<< HEAD
 folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW July/'
+=======
+folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW May'
+>>>>>>> origin/main
 
 
 
@@ -784,6 +788,7 @@ d_df_f=d_df[[
 'LAT & LONG',
 'Observations'
               ]]
+<<<<<<< HEAD
 
 
 
@@ -831,4 +836,9 @@ print("Export completed successfully_l!")
 
 
 
+=======
+d_df_f.to_csv('Adhoc with new changes with_limited_columns_May24.csv')
+
+d_df.to_csv('Adhoc with new changes with_all_columns_May24.csv')
+>>>>>>> origin/main
 
