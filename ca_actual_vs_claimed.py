@@ -42,10 +42,13 @@ dff.dtypes
 
 if dff is not None:
     # Perform groupby on 'Emp ID' and 'Date', summing 'Final KM' and 'Distance(KM)'
-    grouped_df = dff.groupby(['Emp ID', 'Date'], as_index=False)[['Distance(KM)', 'Final KM']].sum()
+    grouped_df = dff.groupby(['Emp ID', 'Date'], as_index=False)[['KM post Speed','KM post Mark in/Out','Car Hire KM','Distance(KM)', 'Final KM']].sum()
     print(grouped_df)
 else:
     print("d_dff is None. Check the DataFrame initialization.")
+    
+    
+    
 
 jmd = dff[['Emp ID', 'JMDO/JMDL']].groupby('Emp ID').agg({'JMDO/JMDL': 'first'}).reset_index()
 
@@ -85,7 +88,7 @@ checkdf = merged_df[(merged_df['Emp ID'] == 50115492)&(merged_df['Date'] == '202
 print(merged_df.head())
 
 
-merged_df1=merged_df[['agentId', 'fromDate' , 'JMDO/JMDL','Distance(KM)','Final KM','totalDistance', 'totalAmount']]
+merged_df1=merged_df[['agentId', 'fromDate' , 'JMDO/JMDL','KM post Speed','KM post Mark in/Out','Car Hire KM','Distance(KM)','Final KM','totalDistance', 'totalAmount']]
 
 merged_df1.rename(columns={'agentId':'Emp ID', 'fromDate':'Date'}, inplace=True)
 
@@ -100,8 +103,8 @@ merged_df1.rename(columns={'totalDistance':'Claimed_Distance'},inplace=True)
 checkdf = merged_df1[(merged_df1['Emp ID'] == 50115492)&(merged_df1['Date'] == '2024-07-01')]
 
 
-merged_df1.to_csv('ca_actual_vs_claim_16_Sep.csv')
+merged_df1.to_csv('ca_actual_vs_claim_17_Sep.csv')
 
-merged_df.to_csv('ca_actual_vs_claim_16_Sep_check.csv')
+merged_df.to_csv('ca_actual_vs_claim_17_Sep_check.csv')
 
 

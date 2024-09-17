@@ -33,6 +33,83 @@ file3=file3.rename(columns={'airmail_id':'Airmail ID','shipment_id':'Shipment ID
 
 con_d=pd.concat([file1,file3],axis=0,ignore_index=True)
 
+con_d['Amount To Be Given']=con_d['Amount To Be Given'].round(0)
+
+
+
+# Corrected version
+pivot_df = con_d.pivot_table(values='Amount To Be Given', index=['Shipment ID'], columns=['Source'], aggfunc='sum', margins=True, margins_name='Grand Total', fill_value=0).reset_index()
+
+pivot_df['Remarks'] = pivot_df.apply(
+    lambda x: 'Matched' if x['Grand Total'] == 0 
+    else "Refund not came in ROM'S" if x["ROM'S"] == 0 
+    else "Refund not came in UTILITY" if x['UTILITY'] == 0 
+    else "Delivery Fee" if x['Grand Total'] == -29
+    else '', 
+    axis=1
+)
+
+pivot_df["ROM'S"]=pivot_df["ROM'S"].astype(int)
+
+pivot_df.dtypes
+
+
+# pivot_df.to_csv('test.csv')
+
+
+dddd=pivot_df
+
+
+# Define the categories for summary
+categories = [
+    "Matched",
+    "Refund not came in ROM's",
+    "Delivery Fee",
+    "Refund not Came in Utility"
+]
+
+# Initialize summary DataFrame
+summary_data = {
+    "Shipment level Summary": categories,
+    "No. of Shipment IDs": [],
+    "As per ROMS": [],
+    "As per Utility": [],
+    "Diff": [],
+    "Per Count Diff": []
+}
+
+# Define the category based on the actual remarks
+category = "Refund not came in UTILITY"
+
+count_ids = dddd[dddd['Remarks'] == category].shape[0]
+sum_roms = dddd[dddd['Remarks'] == category]["ROM'S"].sum()
+sum_utility = dddd[dddd['Remarks'] == category]['UTILITY'].sum() + dddd[dddd['Remarks'] == category]['Grand Total'].sum()
+diff = sum_roms + sum_utility
+per_count_diff = diff / count_ids if count_ids > 0 else 0
+
+summary_data["No. of Shipment IDs"].append(count_ids)
+summary_data["As per ROMS"].append(sum_roms)
+summary_data["As per Utility"].append(sum_utility)
+summary_data["Diff"].append(diff)
+summary_data["Per Count Diff"].append(per_count_diff)
+
+# Append the total row
+summary_data["Shipment level Summary"].append("Total")
+summary_data["No. of Shipment IDs"].append(sum(summary_data["No. of Shipment IDs"]))
+summary_data["As per ROMS"].append(sum(summary_data["As per ROMS"]))
+summary_data["As per Utility"].append(sum(summary_data["As per Utility"]))
+summary_data["Diff"].append(sum(summary_data["Diff"]))
+summary_data["Per Count Diff"].append(
+    sum(summary_data["Diff"]) / sum(summary_data["No. of Shipment IDs"]) if sum(summary_data["No. of Shipment IDs"]) > 0 else 0
+)
+
+
+
+# Create the summary DataFrame
+summary_dddd = pd.DataFrame(summary_data)
+
+# Display the summary DataFrame
+print(summary_dddd)
 
 
 
@@ -41,6 +118,17 @@ con_d=pd.concat([file1,file3],axis=0,ignore_index=True)
 
 
 
+
+
+# Create an Excel writer object
+with pd.ExcelWriter('output.xlsx', engine='openpyxl') as writer:
+    # Write df1 to start at cell B2
+    df1.to_excel(writer, sheet_name='Sheet1', startrow=1, startcol=1, index=False)
+    
+    # Write df2 to start at cell B10
+    df2.to_excel(writer, sheet_name='Sheet1', startrow=9, startcol=1, index=False)
+
+print("DataFrames written to 'output.xlsx' successfully.")
 # Define the folder path
 folder_path1 = '.'
 folder_path2 = './RRA POS'
