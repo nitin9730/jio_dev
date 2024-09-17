@@ -83,8 +83,6 @@ merged_df=pd.merge(df2_1,grouped_df,how='left', left_on=['agentId', 'fromDate'],
 
 checkdf = merged_df[(merged_df['Emp ID'] == 50115492)&(merged_df['Date'] == '2024-07-01')]
 
-
-
 print(merged_df.head())
 
 
@@ -92,16 +90,11 @@ merged_df1=merged_df[['agentId', 'fromDate' , 'JMDO/JMDL','KM post Speed','KM po
 
 merged_df1.rename(columns={'agentId':'Emp ID', 'fromDate':'Date'}, inplace=True)
 
-
-
 merged_df1['Difference_additinal_KM']=merged_df1['totalDistance']-merged_df1['Final KM']
 
 merged_df1.rename(columns={'totalDistance':'Claimed_Distance'},inplace=True)
 
-
-
 checkdf = merged_df1[(merged_df1['Emp ID'] == 50115492)&(merged_df1['Date'] == '2024-07-01')]
-
 
 merged_df1.to_csv('ca_actual_vs_claim_17_Sep.csv')
 
