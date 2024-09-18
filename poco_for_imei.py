@@ -7,33 +7,14 @@ import pandas as pd
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-# Update this path to the location where you placed the downloaded chromedriver
-chromedriver_path = "/Users/nitin14.patil/Downloads/chromedriver-mac-arm64 2/chromedriver"
+from webdriver_manager.chrome import ChromeDriverManager
 
 chrome_options = Options()
 # chrome_options.add_argument('--headless')
 # chrome_options.add_argument('--incognito')
 
-chrome_service = ChromeService(executable_path=chromedriver_path)
+browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
-browser = webdriver.Chrome(service=chrome_service, options=chrome_options) 
-pattern = '\d+'
-pattern2 = '([0-2]?[0-9]|3[0-1])'
- 
-# chrome_options = webdriver.ChromeOptions()
-#chrome_options.add_argument('--headless')  # Add any other options you need
- 
-# Use ChromeDriverManager to get the path to the ChromeDriver executable
-# chrome_path = ChromeDriverManager().install()
-# Create an instance of the WebDriverManager with the desired browser
-#web_driver_manager = ChromeDriverManager(browser='chrome')
-# browser = webdriver.Chrome(executable_path=chrome_path, options=chrome_options)
-#browser.get('https://moto.nuralsales.app/Login/motorola/Login.aspx')
-     
-        
-# options = Options()
-# options.headless = True
 browser.get('https://in.prm.mi.com/#/enterprise_center/imei-report')
 
 browser.maximize_window()
@@ -97,7 +78,7 @@ download=browser.find_elements(By.XPATH,"//tbody/tr[1]/td[4]/button[1]")
 download[0].click()
 
 
-browser.close()
+# browser.close()
 
 
 
