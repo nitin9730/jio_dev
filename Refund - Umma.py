@@ -111,15 +111,11 @@ summary_data["Per Count Diff"].append(
     sum(summary_data["Diff"]) / sum(summary_data["No. of Shipment IDs"]) if sum(summary_data["No. of Shipment IDs"]) > 0 else 0
 )
 
-
-
 # Create the summary DataFrame
 summary_df = pd.DataFrame(summary_data)
 
 # Display the summary DataFrame
 print(summary_df)
-
-
 
 # Create an Excel writer object
 with pd.ExcelWriter('./output/output.xlsx', engine='openpyxl') as writer:
