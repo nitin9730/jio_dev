@@ -15,27 +15,95 @@ import pandas as pd
 from haversine import haversine, Unit
 
 
-file_path1 = r'/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/rd.in/rd.in/Adhoc with new changes with_all_columns_July24f.xlsx'
+file_path1 = r'/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/rd.in/rd.in/Adhoc with new changes with_all_columns_Apr24.csv'
 
-file_path2 = r'/Users/nitin14.patil/Downloads/July_jpw_sa_conveyance_detail.csv'
+file_path2 = r'/Users/nitin14.patil/Downloads/Conveyance_Details_APR_JMD.csv'
 
 
-df = pd.read_excel(file_path1,sheet_name='Sheet1')
 
-df1 = pd.read_excel(file_path1,sheet_name='Sheet2')
+dff = pd.read_csv(file_path1)
 
-dff=pd.concat([df,df1],axis=0,ignore_index=True)
+
+
+
+
+
+
+# import pandas as pd
+
+# def read_excel_with_exemptions(file_path1, sheet_name=None):
+#     try:
+#         # First attempt: default read_excel with openpyxl engine (for .xlsx files)
+#         df = pd.read_excel(file_path1, sheet_name=sheet_name, engine='openpyxl')
+#         print("File read successfully with openpyxl.")
+#         return df
+
+#     except UnicodeDecodeError as e:
+#         # Handle encoding-related issues
+#         print(f"UnicodeDecodeError encountered: {e}")
+#         print("Retrying with a different encoding...")
+#         try:
+#             df = pd.read_excel(file_path1, sheet_name=sheet_name, encoding='utf-16')
+#             print("File read successfully with utf-16 encoding.")
+#             return df
+#         except Exception as e2:
+#             print(f"Failed with utf-16 encoding: {e2}")
+
+#     except ValueError as e:
+#         # Handle engine-specific issues
+#         print(f"ValueError encountered: {e}")
+#         print("Retrying with xlrd engine (for older .xls files)...")
+#         try:
+#             df = pd.read_excel(file_path1, sheet_name=sheet_name, engine='xlrd')
+#             print("File read successfully with xlrd.")
+#             return df
+#         except Exception as e2:
+#             print(f"Failed with xlrd engine: {e2}")
+
+#     except FileNotFoundError:
+#         print("File not found. Please check the file path.")
+        
+#     except Exception as e:
+#         # Catch-all for any other exceptions
+#         print(f"An error occurred: {e}")
+    
+#     return None
+
+
+
+
+# sheet_name = 'Adhoc with new changes with_all'  # Specify sheet name or None for the first sheet
+# dff = read_excel_with_exemptions(file_path1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# df1 = pd.read_excel(file_path1,sheet_name='Sheet2')
+
+# dff=pd.concat([df,df1],axis=0,ignore_index=True)
 
 dff.sort_values(by=['Emp ID', 'Date'],inplace=True)
 
 df2=pd.read_csv(file_path2)
 
 
+
+
 dff.columns
 
 
 dff.dtypes
-
 
 
 
@@ -63,7 +131,7 @@ grouped_df.dtypes
 df2.dtypes
 
 
-
+grouped_df['Date']=pd.to_datetime(grouped_df['Date'])
 df2['fromDate']=pd.to_datetime(df2['fromDate'])
 
 df2.sort_values(by=['agentId', 'fromDate'],inplace=True)
@@ -74,6 +142,8 @@ df2_1=df2[['agentId', 'fromDate', 'totalDistance', 'totalAmount']]
 
 
 checkdf1 = dff[(dff['Emp ID'] == 50115492)&(dff['Date'] == '2024-07-01')]
+
+
 
 
 
@@ -96,8 +166,8 @@ merged_df1.rename(columns={'totalDistance':'Claimed_Distance'},inplace=True)
 
 checkdf = merged_df1[(merged_df1['Emp ID'] == 50115492)&(merged_df1['Date'] == '2024-07-01')]
 
-merged_df1.to_csv('ca_actual_vs_claim_17_Sep.csv')
+merged_df1.to_csv('./ca_acutal_vs_claim/ca_actual_vs_claim_Apr24.csv')
 
-merged_df.to_csv('ca_actual_vs_claim_17_Sep_check.csv')
+# merged_df.to_csv('ca_actual_vs_claim_17_Sep_check.csv')
 
 

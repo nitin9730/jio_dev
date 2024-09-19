@@ -16,15 +16,7 @@ from haversine import haversine, Unit
 
 # result=hs.haversine(loc1,loc2,unit=Unit.KILOMETERS)
 
-
-
-# Define the folder path
-<<<<<<< HEAD
-folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW July/'
-=======
-folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW May'
->>>>>>> origin/main
-
+folder_path1 = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/conveyance_analysis/JPW Aug'
 
 
 # Initialize an empty list to store DataFrames
@@ -86,7 +78,7 @@ print('data imported successfull.')
 
 
 # # Filter the DataFrame for the specific date
-# checkdf = df[(df['Emp ID'] == 50095250)&(df['Date'] == '2024-07-01')]
+checkdf = df[(df['Emp ID'] == 55037974)&(df['Date'] == '2024-08-05')]
 
 
 print('line 55 run successfully')
@@ -130,7 +122,7 @@ print('line 100 run successfully')
 
 # Filter the DataFrame for the specific date
 
-checkdf = df[(df['Emp ID'] == 50095250)&(df['Date'] == '2024-07-01')]
+checkdf = df[(df['Emp ID'] == 55037974)&(df['Date'] == '2024-08-05')]
 
 df.dtypes
 
@@ -205,8 +197,12 @@ df_with_distances['Speed of Travel (KM/Hr)'] = df_with_distances['Speed of Trave
 print('Digits converted to 2 desimal points')
 
 
+
+
+
+
 # Filter the DataFrame for the specific date
-checkdf = df_with_distances[(df_with_distances['Emp ID'] == 50095250)&(df_with_distances['Date'] == '2024-07-01')]
+checkdf = df_with_distances[(df_with_distances['Emp ID'] == 55037974)&(df_with_distances['Date'] == '2024-08-05')]
 
 df_ca = df_with_distances.merge(df_emp_filtered, how='left', left_on='Emp ID', right_on='Emp Code')
 
@@ -249,7 +245,7 @@ d_df=df_ca
 
 
 # Filter the DataFrame for the specific date
-checkdf = d_df[(d_df['Emp ID'] == 50095250)&(d_df['Date'] == '2024-07-01')]
+checkdf = d_df[(d_df['Emp ID'] == 55037974)&(d_df['Date'] == '2024-08-05')]
 
 
 
@@ -386,15 +382,11 @@ attendance_of_min_time = pd.merge(min_timestamps, attendance_df, on=['Emp ID', '
 print(attendance_of_min_time)
 
 
+
+
 d_df.loc[d_df['Timestamp'].isin(attendance_of_min_time['Timestamp']) & (d_df['PRM Id'] == 'Attendance'), 'Is last checkin to Mark-out'] = 'Mark In'
 
-checkdf= d_df[(d_df['Emp ID']==50123511) & (d_df['Date']=='2024-07-05')]
-
-
-
-# Filter the DataFrame for the specific date
-checkdf = d_df[(d_df['Emp ID'] == 50095250)&(d_df['Date'] == '2024-07-01')]
-
+checkdf= d_df[(d_df['Emp ID']==55037974) & (d_df['Date']=='2024-08-05')]
 
 
 # Find the minimum timestamp for each employee on each day
@@ -415,7 +407,7 @@ print(df1_filtered)
 d_df.loc[d_df['Timestamp'].isin(df1_filtered['Timestamp_x']) & (d_df['PRM Id'] == 'Attendance'), 'Is last checkin to Mark-out'] = 'Mark Out'
 
 
-checkdf= d_df[(d_df['Emp ID']==50123511) & (d_df['Date']=='2024-07-05')]
+checkdf= d_df[(d_df['Emp ID']==55037974) & (d_df['Date']=='2024-08-05')]
 
 b_df = d_df[(d_df['Line >10 KM_for_10_Ocurence']=='Yes')&(d_df['Is last checkin to Mark-out']=='Mark In')]
 
@@ -487,7 +479,7 @@ merged_df['Count >3 per day of >10KM - Flag-C between Retailers']=np.where(
 
 d_df=merged_df
 
-checkdf= d_df[(d_df['Emp ID']==50123511)]
+checkdf= d_df[(d_df['Emp ID']==55037974)]
 
 
 
@@ -547,6 +539,13 @@ d_df.dtypes
 
 
 
+checkdf = d_df[(d_df['Emp ID'] == 55037974)]
+
+
+
+
+
+
 def calculate_new_distance(row):
     # Apply the JMDL conditions
     if row['JMDO/JMDL'] == "JMDL" and row['Is last checkin to Mark-out'] == "Mark In" and row['Distance(KM)'] > 40:
@@ -568,20 +567,8 @@ def calculate_new_distance(row):
 d_df['new_distance_n'] = d_df.apply(calculate_new_distance, axis=1)
 
 
-checkdf = d_df[(d_df['Emp ID'] == 50117191)]
+checkdf = d_df[(d_df['Emp ID'] == 50163693) &(d_df['Date'] == '2024-08-20')]
               
-
-
-
-# # Step 2: Apply the conditions and assign the results
-# d_df['KM post Mark in/Out'] = np.where(
-#     (d_df['JMDO/JMDL'].isin(["JMDO", "JMDL"])) & 
-#     (d_df['Is last checkin to Mark-out'].isin(["Mark In"])),
-#     d_df['new_distance_n'],
-#     # Assign 'new_distance_n' where condition is met
-#     d_df['Distance(KM)']  # Otherwise, assign 'Distance(KM)'
-# )
-
 
 d_df['new_distance_n1'] = d_df['new_distance_n'].shift(1)
 
@@ -608,28 +595,10 @@ def apply_km_post_mark_in_out(d_df):
 d_df = apply_km_post_mark_in_out(d_df)
 
 # Example of filtering for a specific employee ID
-checkdf = d_df[(d_df['Emp ID'] == 50087788)
-               
-               &(d_df['Date'] == '25/07/24')]
-
-
-# # Step 3: Apply the second condition for JMDL
-# d_df['KM post Mark in/Out'] = np.where(
-
-#    d_df['Is last checkin to Mark-out'] == "Mark Out",
-#     0,
-#     d_df['KM post Mark in/Out']
-# )
+checkdf = d_df[(d_df['Emp ID'] == 50163693) &(d_df['Date'] == '2024-08-20')]
 
 
 
-# # Step 3: Apply the second condition for JMDL
-# d_df['KM post Mark in/Out1'] = np.where(
-
-#    d_df['Is last checkin to Mark-out'] == "Mark Out",
-#     0,
-#     d_df['KM post Mark in/Out']
-# )
 
 
 
@@ -639,13 +608,11 @@ checkdf = d_df[(d_df['Emp ID'] == 50087788)
 df_ch=d_df[['JMDO/JMDL','Emp ID', 'Date', 'Is last checkin to Mark-out', 'Distance(KM)',  'Distance(KM)_shift','Distance(KM)_shift1','Is last checkin to Mark-out1','KM post Mark in/Out']]
 
 
-
-df_ch = df_ch[(d_df['Emp ID'] == 50117191)&(df_ch['Date']=='2024-07-13')]
-
-
-
 # Example of filtering for a specific employee ID
-checkdf = d_df[(d_df['Emp ID'] == 50117191)&(d_df['Date']=='2024-07-13')]
+checkdf = df_ch[(df_ch['Emp ID'] == 50163693) &(df_ch['Date'] == '2024-08-20')]
+
+
+
 
 
 # Create a shifted version of the 'Distance(KM)' column
@@ -664,13 +631,15 @@ checkdf = d_df[d_df['Emp ID'] == 50123511]
 checkdf = d_df[(d_df['Emp ID'] == 67646412) & (d_df['Distance(KM)'] >70)]
 
 
+
+
 d_df['Car Hire KM']=np.where(
     d_df['Car Hire chk'] == 'Yes',0,d_df['Distance(KM)']
     )
 
 
 d_df['No Issues'] = np.where(
-    (d_df['Speed>70 KM/HR'] == 'No') & (d_df['Attendance chk'] == 'No'),
+    (d_df['Speed>70 KM/HR'] == 'No') & (d_df['Attendance chk'] == 'No') & (d_df['Is last checkin to Mark-out1']!='Mark Out'),
     d_df['Distance(KM)'],
     0     # Default value if the condition is not met
 )
@@ -680,58 +649,24 @@ d_df['KM post Speed'] = np.where(
     d_df['Speed>70 KM/HR']=='Yes',0,d_df['Distance(KM)']
     )
 
-
-
 # Convert columns to numeric, forcing errors to NaN
 d_df[['KM post Speed', 'KM post Mark in/Out', 'Car Hire KM', 'No Issues']] = d_df[['KM post Speed', 
     'KM post Mark in/Out', 'Car Hire KM', 'No Issues']].apply(pd.to_numeric, errors='coerce')
 
 
-# ===========================
-# # Calculate the minimum value across the specified columns for each row
-# d_df['Final KM'] = np.where(
-#     (d_df['KM post Speed']!=0)|(d_df['KM post Mark in/Out']!=0)|(d_df['Car Hire KM']!=0),
-    
-#     d_df[['KM post Speed', 'KM post Mark in/Out', 'Car Hire KM']].min(axis=1),
-    
-#     d_df['No Issues'])
-# ===========================
 
+def calculate_final_km(row):
+    # Step 1: Check if 'Car Hire chk' is 'Yes' or 'Speed>70 KM/HR' is 'Yes'
+    if row['Car Hire chk'] == 'Yes' or row['Speed>70 KM/HR'] == 'Yes':
+        return 0  # Set 'Final KM' to 0 if either condition is True
+    # Step 2: Check if 'No Issues' is 0
+    elif row['No Issues'] == 0:
+        return row['KM post Mark in/Out']  # Set 'Final KM' to 'KM post Mark in/Out' if 'No Issues' is 0
+    else:
+        return row['No Issues']  # Retain 'No Issues' value if none of the above conditions are met
 
-
-
-
-
-# #d_df['Final KM'] = np.where(
-#     d_df['Car Hire KM'] == 'Yes',  # Condition 1
-# 0,  # If 'Car Hire KM' is 'Yes', set 'Final KM' to 0
-#     np.where(
-#         d_df['Speed>70 KM/HR'] == 'Yes',  # Condition 2 (nested)
-#         0,  # If 'Speed>70 KM/HR' is 'Yes', set 'Final KM' to 0
-#         np.where(
-#             d_df['Attendance chk'] == 'Yes',  # Condition 3 (nested)
-#             d_df['KM post Mark in/Out'],  # If 'Attendance chk' is 'Yes', set 'Final KM' to 'KM post Mark in/Out'
-#             d_df['No Issues']  # Otherwise, set 'Final KM' to 'No Issues'
-#         )
-#     )
-# )
-
-
-
-# Step 1: Set 'Final KM' to 0 if 'Car Hire KM' == 'Yes' OR 'Speed>70 KM/HR' == 'Yes'
-d_df['Final KM'] = np.where(
-    (d_df['Car Hire chk'] == 'Yes') | (d_df['Speed>70 KM/HR'] == 'Yes'),  # OR condition
-    0,  # Set 'Final KM' to 0 if either condition is True
-     # Default value is 'No Issues'
-
- np.where(
-    (d_df['Attendance chk'] == 'Yes') & (d_df['No Issues'] == 0),  # Attendance check condition
-    d_df['KM post Mark in/Out'],  # If 'Attendance chk' is 'Yes', set 'Final KM' to 'KM post Mark in/Out'
-    d_df['No Issues']   # Retain the value from Step 1 if 'Attendance chk' is not 'Yes'
-)
-
-)
-
+# Apply the function to each row in the DataFrame
+d_df['Final KM'] = d_df.apply(calculate_final_km, axis=1)
 
 print(d_df[['Car Hire KM', 'Speed>70 KM/HR', 'Attendance chk', 'KM post Mark in/Out', 'No Issues']].head())
 
@@ -739,15 +674,12 @@ print(d_df[['Car Hire KM', 'Speed>70 KM/HR', 'Attendance chk', 'KM post Mark in/
     
 d_df.dtypes
 # Example of filtering for a specific employee ID
-checkdf = d_df[(d_df['Emp ID'] == 50109664)]
+
+checkdf = d_df_f[(d_df_f['Emp ID'] == 50163693) & (d_df_f['Date'] == '2024-08-20')]
 
 
-# 50109664
 
-# 67646412
     
-
-
 d_df['Diff KM'] = d_df['Final KM']-d_df['Distance(KM)']
 
 d_df['LAT & LONG'] = (d_df['Lat'].astype(str) +","+d_df['Long'].astype(str))
@@ -788,17 +720,16 @@ d_df_f=d_df[[
 'LAT & LONG',
 'Observations'
               ]]
-<<<<<<< HEAD
 
 
 
-max_rows_per_sheet = 700000
+max_rows_per_sheet = 1050000
 
 # Calculate the number of sheets needed
 num_sheets = (len(d_df) // max_rows_per_sheet) + 1
 
-# Create an Excel writer object
-with pd.ExcelWriter('Adhoc with new changes with_all_columns_July24f.xlsx', engine='xlsxwriter') as writer:
+# Create an Excel writer objecta
+with pd.ExcelWriter('Adhoc with new changes with_all_columns_Aug24f.xlsx', engine='xlsxwriter') as writer:
     for i in range(num_sheets):
         start_row = i * max_rows_per_sheet
         end_row = (i + 1) * max_rows_per_sheet
@@ -817,7 +748,7 @@ print("Export completed successfully_a!")
 num_sheets = (len(d_df_f) // max_rows_per_sheet) + 1
 
 # Create an Excel writer object
-with pd.ExcelWriter('Adhoc with new changes with_all_limited_July24f.xlsx', engine='xlsxwriter') as writer:
+with pd.ExcelWriter('Adhoc with new changes with__limited_columns_Aug24f.xlsx', engine='xlsxwriter') as writer:
     for i in range(num_sheets):
         start_row = i * max_rows_per_sheet
         end_row = (i + 1) * max_rows_per_sheet
@@ -830,15 +761,10 @@ with pd.ExcelWriter('Adhoc with new changes with_all_limited_July24f.xlsx', engi
 
 print("Export completed successfully_l!")
 
+checkdf = d_df_f[(d_df_f['Emp ID'] == 50163693) & (d_df_f['Date'] == '2024-08-20')]
 
 
+# d_df_f.to_csv('Adhoc with new changes with_limited_columns_May24.csv')
 
-
-
-
-=======
-d_df_f.to_csv('Adhoc with new changes with_limited_columns_May24.csv')
-
-d_df.to_csv('Adhoc with new changes with_all_columns_May24.csv')
->>>>>>> origin/main
+# d_df.to_csv('Adhoc with new changes with_all_columns_May24.csv')
 
