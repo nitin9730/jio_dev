@@ -6,31 +6,6 @@ from datetime import datetime
 import os
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Data_input_f.xlsx'
 
 
