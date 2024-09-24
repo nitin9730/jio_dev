@@ -32,7 +32,7 @@ file3=file3.rename(columns={'airmail_id':'Airmail ID','shipment_id':'Shipment ID
 
 con_d=pd.concat([file1,file3],axis=0,ignore_index=True)
 
-con_d['Amount To Be Given']=con_d['Amount To Be Given'].round(0)
+con_d['Amount To Be Given']=con_d['Amount To Be Given']
 
 
 
