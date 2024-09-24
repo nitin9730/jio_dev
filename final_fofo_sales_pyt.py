@@ -30,6 +30,8 @@ fromDate = datetime(2024, 4, 1, 0, 0, 0)
 toDate = datetime(2024, 9, 21, 15, 56, 0) 
 from_timestamp = int(fromDate.timestamp())
 to_timestamp = int(toDate.timestamp())
+
+
 query = """
 SELECT s.fynd_order_id,
 s.id as "shipment_id",
