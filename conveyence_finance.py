@@ -197,10 +197,6 @@ df_with_distances['Speed of Travel (KM/Hr)'] = df_with_distances['Speed of Trave
 print('Digits converted to 2 desimal points')
 
 
-
-
-
-
 # Filter the DataFrame for the specific date
 checkdf = df_with_distances[(df_with_distances['Emp ID'] == 55037974)&(df_with_distances['Date'] == '2024-08-05')]
 
@@ -381,9 +377,6 @@ attendance_of_min_time = pd.merge(min_timestamps, attendance_df, on=['Emp ID', '
 
 print(attendance_of_min_time)
 
-
-
-
 d_df.loc[d_df['Timestamp'].isin(attendance_of_min_time['Timestamp']) & (d_df['PRM Id'] == 'Attendance'), 'Is last checkin to Mark-out'] = 'Mark In'
 
 checkdf= d_df[(d_df['Emp ID']==55037974) & (d_df['Date']=='2024-08-05')]
@@ -481,11 +474,6 @@ d_df=merged_df
 
 checkdf= d_df[(d_df['Emp ID']==55037974)]
 
-
-
-
-
-
 c_file_path = '/Users/nitin14.patil/Downloads/RIL/ril/conveyance_analysis/Car Request Details.xlsx'
 c_excel_file = pd.ExcelFile(c_file_path)
 c_sheet_names = c_excel_file.sheet_names
@@ -528,6 +516,8 @@ expanded_df['date_value'] = expanded_df['TRDMBOOKSTARTDATE'].apply(date_to_excel
 # Corrected code for conditionally creating 'CC' column
 expanded_df['CC'] = (expanded_df['TRDMFIELD1'].astype(str) + expanded_df['date_value'].astype(str)).astype(int)
 
+
+expanded_df.to_csv('car_hire_expanded.csv')
 
 # Step 1: Create a shifted column for Distance(KM) with the correct shift applied
 
@@ -673,23 +663,12 @@ print(d_df[['Car Hire KM', 'Speed>70 KM/HR', 'Attendance chk', 'KM post Mark in/
 
     
 d_df.dtypes
-# Example of filtering for a specific employee ID
-
-checkdf = d_df_f[(d_df_f['Emp ID'] == 50163693) & (d_df_f['Date'] == '2024-08-20')]
-
-
-
     
 d_df['Diff KM'] = d_df['Final KM']-d_df['Distance(KM)']
 
 d_df['LAT & LONG'] = (d_df['Lat'].astype(str) +","+d_df['Long'].astype(str))
 
 d_df['Observations']=''
-
-
-
-
-# 50093194	23/07/24
 
 
 d_df_f=d_df[[
@@ -729,7 +708,7 @@ max_rows_per_sheet = 1050000
 num_sheets = (len(d_df) // max_rows_per_sheet) + 1
 
 # Create an Excel writer objecta
-with pd.ExcelWriter('Adhoc with new changes with_all_columns_Aug24f.xlsx', engine='xlsxwriter') as writer:
+with pd.ExcelWriter('Adhoc with new changes with_all_columns_Aug24f_25sep.xlsx', engine='xlsxwriter') as writer:
     for i in range(num_sheets):
         start_row = i * max_rows_per_sheet
         end_row = (i + 1) * max_rows_per_sheet
@@ -748,7 +727,7 @@ print("Export completed successfully_a!")
 num_sheets = (len(d_df_f) // max_rows_per_sheet) + 1
 
 # Create an Excel writer object
-with pd.ExcelWriter('Adhoc with new changes with__limited_columns_Aug24f.xlsx', engine='xlsxwriter') as writer:
+with pd.ExcelWriter('Adhoc with new changes with__limited_columns_Aug24f_25sep.xlsx', engine='xlsxwriter') as writer:
     for i in range(num_sheets):
         start_row = i * max_rows_per_sheet
         end_row = (i + 1) * max_rows_per_sheet

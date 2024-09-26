@@ -15,21 +15,22 @@ import pandas as pd
 from haversine import haversine, Unit
 
 
-file_path1 = r'/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/rd.in/rd.in/Adhoc with new changes with_limited_columns_Jun24.csv'
+file_path1 = r'/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/PNL Finance/Adhoc with new changes with_all_columns_Aug24f_25sep.xlsx'
 
-file_path2_1 = r'/Users/nitin14.patil/Downloads/ConveyanceJune1to15.csv'
+file_path2_1 = r'/Users/nitin14.patil/Downloads/August_jpw_sa_conveyance_detail.csv'
 
-file_path2_2 = r'/Users/nitin14.patil/Downloads/ConveyanceJune16to30.csv'
+# file_path2_2 = r'/Users/nitin14.patil/Downloads/ConveyanceJune16to30.csv'
 
 df1=pd.read_csv(file_path2_1)
-df2=pd.read_csv(file_path2_2)
 
-df2=pd.concat([df1,df2],axis=0,ignore_index=True)
+# df2=pd.read_csv(file_path2_2)
+
+# df2=pd.concat([df1,df2],axis=0,ignore_index=True)
 
 
 
 
-dff = pd.read_csv(file_path1)
+# dff = pd.read_csv(file_path1)
 
 
 # dff.to_csv('test.csv')
@@ -81,7 +82,7 @@ dff = pd.read_csv(file_path1)
 
 
 # sheet_name = 'Adhoc with new changes with_all'  # Specify sheet name or None for the first sheet
-# dff = read_excel_with_exemptions(file_path1)
+dff = pd.read_excel(file_path1)
 
 
 # df = pd.read_excel(file_path1,sheet_name='Sheet1')
@@ -90,13 +91,22 @@ dff = pd.read_csv(file_path1)
 # dff=pd.concat([df,df1],axis=0,ignore_index=True)
 
 
+
+dff.dtypes
+
+
+
+dff['Date1']=dff['Date'].astype(str)
+
+
 # Split the 'Full Address' column by '/'
-dff[['year', 'month', 'day']] = dff['Date'].str.split('-', expand=True)
+dff[['year', 'month', 'day']] = dff['Date1'].str.split('-', expand=True)
 
 
 dff.sort_values(by=['Emp ID', 'month', 'day'],inplace=True)
 
 
+df2=df1
 
 df2[['year', 'month', 'day']] = df2['fromDate'].str.split('-', expand=True)
 
@@ -196,7 +206,7 @@ merged_df1.rename(columns={'totalDistance':'Claimed_Distance'},inplace=True)
 
 checkdf = merged_df1[(merged_df1['Emp ID'] == 50115492)&(merged_df1['Date'] == '2024-06-01')]
 
-merged_df1.to_csv('./ca_acutal_vs_claim/ca_actual_vs_claim_Jun24_24Sep_f.csv')
+merged_df1.to_csv('./ca_acutal_vs_claim/ca_actual_vs_claim_Jun24_25Sep_f.csv')
 
 # merged_df.to_csv('ca_actual_vs_claim_17_Sep_check.csv')
 
