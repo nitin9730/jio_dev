@@ -36,24 +36,24 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-#chrome_options = Options()
-# chrome_options.add_argument('--headless')
-# chrome_options.add_argument('--incognito')
-
-#browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
-
-
-
-# Update this path to the location where you placed the downloaded chromedriver
-chromedriver_path = "/Users/nitin14.patil/Downloads/chromedriver"
-
 chrome_options = Options()
-# chrome_options.add_argument('--headless')
-# chrome_options.add_argument('--incognito')
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--incognito')
 
-chrome_service = ChromeService(executable_path=chromedriver_path)
+browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
-browser = webdriver.Chrome(service=chrome_service, options=chrome_options) 
+
+
+# # Update this path to the location where you placed the downloaded chromedriver
+# chromedriver_path = "/Users/nitin14.patil/Downloads/chromedriver"
+
+# chrome_options = Options()
+# # chrome_options.add_argument('--headless')
+# # chrome_options.add_argument('--incognito')
+
+# chrome_service = ChromeService(executable_path=chromedriver_path)
+
+# browser = webdriver.Chrome(service=chrome_service, options=chrome_options) 
 
 
 
@@ -84,21 +84,7 @@ submit[0].click()
 
 sleep(5)
 
-# browser.get('https://in.prm.mi.com/#/enterprise_center/imei-report')
-
-"//li[@class='title-item active']"
-
-
-title_item=browser.find_elements(By.XPATH,"//li[@class='title-item']")
-title_item[1].click()
-
-menu_item=browser.find_elements(By.XPATH,"//div[@class='menu-item']")
-menu_item[3].click()
-
-
-# ("//div[@class='menu-item']")
-
-
+browser.get('https://in.prm.mi.com/#/enterprise_center/imei-report')
 
 
 sleep(5)
