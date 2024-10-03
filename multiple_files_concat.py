@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Folder path containing the files
-folder_path = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/PNL Finance/ca_acutal_vs_claim/untitled folder1/'
+folder_path = '/Users/nitin14.patil/Library/CloudStorage/OneDrive-RelianceCorporateITParkLimited/Documents/python_work/PNL Finance/vas/'
 
 # Get a list of all CSV files in the folder
 files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
@@ -22,4 +22,4 @@ merged_df = pd.concat(dfs, axis=0, ignore_index=True)
 # Display the resulting DataFrame
 print(merged_df)
 
-merged_df.to_csv('conveyance_actual_vs_claimed_24Sep.csv')
+merged_df.to_csv('vas-consolidated-data.csv')
