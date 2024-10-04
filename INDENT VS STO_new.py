@@ -75,15 +75,15 @@ private_key_path = '/Users/nitin14.patil/Downloads/ssh_key.fynd'
  
 # Database server information
 
-db_host = '172.17.0.19'
+db_host = '172.17.0.80'
 
 db_port = 5432
 
-db_username = 'fynd_falcon_cofo_readwrite'
+db_username = 'fynd_dms_orders_readwrite'
 
-db_password = 'readWrite_falcon_cofo!2023'
+db_password = 'readWrite_dms_orders!2024'
 last_two_hours_end_time = datetime.now(timezone.utc)
-last_two_hours_start_time = last_two_hours_end_time.replace(minute=0, second=0, microsecond=0) - timedelta(days=300)
+last_two_hours_start_time = last_two_hours_end_time.replace(minute=0, second=0, microsecond=0) - timedelta(days=200)
  
 formatted_start_time = last_two_hours_start_time.strftime('%Y-%m-%d %H:%M:%S')
 formatted_end_time = last_two_hours_end_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -171,7 +171,7 @@ with SSHTunnelForwarder(
 
         password=db_password,
 
-        database='falcon_cofo'
+        database='dms_orders'
 
     )
  
