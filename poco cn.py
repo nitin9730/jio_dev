@@ -62,13 +62,11 @@ billing_qty_check['Qty as per Primary']=billing_qty_check['Billing Document'].ap
 
 
 
-Duplication Check
+# Duplication Check
 
-billing_qty_check['Duplication Check']=billing_qty_check['Billing Do.apply(
-    lambda x: billing_dump.loc[billing_dump['Billing Document'] == x, 'Invoice Quantity'].sum()
-    )
-
-
+# billing_qty_check['Duplication Check']=billing_qty_check['Billing Do.apply(
+#     lambda x: billing_dump.loc[billing_dump['Billing Document'] == x, 'Invoice Quantity'].sum()
+#     )
 
 
 
@@ -76,7 +74,9 @@ billing_qty_check['Duplication Check']=billing_qty_check['Billing Do.apply(
 
 
 
-=IF(E5="Yes",IF(C5=F5,"Ok","To Hold"),"Ok")
+
+
+# =IF(E5="Yes",IF(C5=F5,"Ok","To Hold"),"Ok")
 
 
 
