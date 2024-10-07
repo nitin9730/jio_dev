@@ -83,7 +83,7 @@ db_username = 'fynd_dms_orders_readwrite'
 
 db_password = 'readWrite_dms_orders!2024'
 last_two_hours_end_time = datetime.now(timezone.utc)
-last_two_hours_start_time = last_two_hours_end_time.replace(minute=0, second=0, microsecond=0) - timedelta(days=200)
+last_two_hours_start_time = last_two_hours_end_time.replace(minute=0, second=0, microsecond=0) - timedelta(days=100)
  
 formatted_start_time = last_two_hours_start_time.strftime('%Y-%m-%d %H:%M:%S')
 formatted_end_time = last_two_hours_end_time.strftime('%Y-%m-%d %H:%M:%S')
