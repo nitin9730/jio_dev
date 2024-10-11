@@ -1,46 +1,46 @@
-# import pandas as pd
-# from time import sleep
-# from selenium import webdriver
-# from selenium.webdriver.common.by import By
-# from selenium.webdriver.chrome.options import Options
-# from selenium.webdriver.chrome.service import Service
-# from webdriver_manager.chrome import ChromeDriverManager
-# from selenium.webdriver.support.ui import WebDriverWait
-# from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.support.ui import Select
-
-# # Set up Chrome options
-# chrome_options = Options()
-# chrome_options.add_argument('--disable-gpu')
-# # Uncomment below to run in headless moade
-# # chrome_options.add_argument('--headless')
-# chrome_options.add_argument('--headless')  # Run Chrome in headless mode
-# chrome_options.add_argument('--no-sandbox')  # Bypass OS security model
-# chrome_options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
-# #chrome_options.binary_location = '/usr/bin/google-chrome'
-# # Add the path to the Chrome binary
-# chrome_options.binary_location = '/usr/bin/google-chrome'
-
-# # Initialize the Chrome driver with service
-# service = Service(ChromeDriverManager().install())
-# browser = webdriver.Chrome(service=service, options=chrome_options)
-
-
+import pandas as pd
+from time import sleep
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from time import sleep
-import pandas as pd
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--incognito')
+from selenium.webdriver.support.ui import Select
 
-browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+# Set up Chrome options
+chrome_options = Options()
+chrome_options.add_argument('--disable-gpu')
+# Uncomment below to run in headless moade
+# chrome_options.add_argument('--headless')
+chrome_options.add_argument('--headless')  # Run Chrome in headless mode
+chrome_options.add_argument('--no-sandbox')  # Bypass OS security model
+chrome_options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
+#chrome_options.binary_location = '/usr/bin/google-chrome'
+# Add the path to the Chrome binary
+chrome_options.binary_location = '/usr/bin/google-chrome'
+
+# Initialize the Chrome driver with service
+service = Service(ChromeDriverManager().install())
+browser = webdriver.Chrome(service=service, options=chrome_options)
+
+
+# from selenium import webdriver
+# from selenium.webdriver.chrome.service import Service as ChromeService
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.chrome.options import Options
+# from time import sleep
+# import pandas as pd
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.support.ui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
+# from webdriver_manager.chrome import ChromeDriverManager
+# chrome_options = Options()
+# chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--incognito')
+
+# browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
 
 

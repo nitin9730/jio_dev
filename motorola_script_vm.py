@@ -76,19 +76,19 @@ import os
 from google.cloud import storage
 
 # Path to your service account key file
-service_account_key_path = '/home/fynd/python/service_account.json'
+service_account_key_path = 'service_account.json'
 
 # Set the environment variable for authentication
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = service_account_key_path
 
 # Set the path to the Downloads folder
-downloads_folder = '/home/fynd/Downloads/'  # Replace with your actual Downloads path
+downloads_folder = '/Downloads/'  # Replace with your actual Downloads path
 
 # Initialize Google Cloud Storage client
 client = storage.Client()
 
 # Specify the bucket name and remote file path
-bucket_name = 'datafiles_staging'
+bucket_name = 'datafiles_staging/poco_imei_details'
 remote_file_path = 'IMEI_Details'
 bucket = client.bucket(bucket_name)
 
